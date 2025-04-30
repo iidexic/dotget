@@ -1,9 +1,11 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
+	"syscall"
 )
 
 func dig() {
@@ -12,6 +14,43 @@ func dig() {
 	for i, c := range contents {
 		fmt.Print(i, ":", c.Name(), " - ", filepath.Ext(c.Name()))
 	}
+}
+
+type format int
+
+type storage struct {
+	filepath, ext string
+	rw            os.File
+	mf            format
+}
+
+func StorageFile(pathf string) {
+	file, err := os.Open(pathf)
+	if err != nil {
+		if errors.Is(err, os.ErrNotExist) || errors.Is(err, syscall.ENOTDIR) {
+			// not exist
+			e := os.MkdirAll(filepath.Dir(pathf), os.ModeDir) // os.ModeDir right? check what is expected
+			if e != nil {
+				panic(e)
+			}
+			file, e = os.Create(pathf)
+			if e != nil {
+				panic(e)
+			}
+		} else {
+			panic(err)
+		}
+	}
+	defer file.Close() // need to move/remove if working with file in a diff function?
+	// bingo now do what you gotta do with this file
+	finf, e := file.Stat()
+	autoerr(e)
+	content := make([]byte, finf.Size())
+	rnum, e := file.Read(content)
+	autoerr(e)
+}
+
+func ReadF(openfile os.File) {
 }
 
 /* now have all the tools to build the crud dotget
