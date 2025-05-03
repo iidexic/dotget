@@ -36,6 +36,20 @@ import (
 // /-> 1 arg = 1 word (space separated) coming after the .exe call.
 // /-> look at cli.Args() to understand possibilities more.
 
+type flagdata struct {
+	str   []cli.StringFlag
+	bool  []cli.BoolFlag
+	int   []cli.IntFlag
+	mutex []cli.MutuallyExclusiveFlags
+}
+
+type commandMaker struct {
+	boolOptions map[string]bool
+
+	//cli.StringMap stringmap used for tag name???
+
+}
+
 func cliFlagEX() {
 	cmd := &cli.Command{
 		UseShortOptionHandling: true, //note above

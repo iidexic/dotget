@@ -24,16 +24,18 @@ type storage struct {
 	mf            format
 }
 
-func StorageFile(pathf string) {
-	file, err := os.Open(pathf)
+// OpenFile opens a file while working out potential errors as best I know how
+func OpenFile(fpath string) *os.File {
+
+	file, err := os.Open(fpath)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) || errors.Is(err, syscall.ENOTDIR) {
 			// not exist
-			e := os.MkdirAll(filepath.Dir(pathf), os.ModeDir) // os.ModeDir right? check what is expected
+			e := os.MkdirAll(filepath.Dir(fpath), os.ModeDir) // os.ModeDir right? check what is expected
 			if e != nil {
 				panic(e)
 			}
-			file, e = os.Create(pathf)
+			file, e = os.Create(fpath)
 			if e != nil {
 				panic(e)
 			}
@@ -41,12 +43,20 @@ func StorageFile(pathf string) {
 			panic(err)
 		}
 	}
-	defer file.Close() // need to move/remove if working with file in a diff function?
+	return file
+}
+
+func StorageFile(pathf string) {
+	file := OpenFile(pathf)
+	// need to handle err on file.close. jk dont need another function
+	// need to move/remove if working with file in a diff function?
+	defer autoerr(file.Close())
 	// bingo now do what you gotta do with this file
 	finf, e := file.Stat()
 	autoerr(e)
 	content := make([]byte, finf.Size())
 	rnum, e := file.Read(content)
+	fmt.Print(rnum)
 	autoerr(e)
 }
 
