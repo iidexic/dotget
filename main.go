@@ -7,8 +7,8 @@ import (
 )
 
 type Options struct {
-	datafile string
 	maindir  string
+	datafile string
 }
 
 func main() {
