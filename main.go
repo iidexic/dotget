@@ -6,22 +6,19 @@ import (
 	"path/filepath"
 )
 
-type path struct {
-	isdir    bool
-	path     string
-	contents map[string]path
+type Options struct {
+	datafile string
+	maindir  string
 }
 
 func main() {
 	dig()
 }
 
-func pathContents() {
-	dirpathA := path{path: filepath.Dir(".\\pathA")}
-	readA, e := os.ReadDir(dirpathA.path)
-	if e != nil {
-		panic(e)
-	}
+func pathContents(path string) {
+	dirpathA := filepath.Dir(path)
+	readA, e := os.ReadDir(dirpathA)
+	autoerr(e)
 	if len(readA) > 0 {
 		for _, v := range readA {
 

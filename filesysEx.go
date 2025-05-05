@@ -1,6 +1,7 @@
 package main
 
 import (
+	//	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
@@ -8,6 +9,12 @@ import (
 	"syscall"
 )
 
+/*
+	Maybe don't need this
+
+type editType int
+const editName editType = iota
+*/
 func dig() {
 	contents, e := os.ReadDir(".")
 	autoerr(e)
@@ -16,17 +23,8 @@ func dig() {
 	}
 }
 
-type format int
-
-type storage struct {
-	filepath, ext string
-	rw            os.File
-	mf            format
-}
-
 // OpenFile opens a file while working out potential errors as best I know how
 func OpenFile(fpath string) *os.File {
-
 	file, err := os.Open(fpath)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) || errors.Is(err, syscall.ENOTDIR) {
@@ -56,6 +54,7 @@ func StorageFile(pathf string) {
 	autoerr(e)
 	content := make([]byte, finf.Size())
 	rnum, e := file.Read(content)
+
 	fmt.Print(rnum)
 	autoerr(e)
 }
