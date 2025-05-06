@@ -30,6 +30,9 @@ func pathContents(path string) {
 	}
 }
 
+func GetConfig() Options {
+
+}
 func autoerr(e error) {
 	if e != nil {
 		panic(e)
